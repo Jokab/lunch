@@ -1,0 +1,21 @@
+{
+    "name": "Lunch",
+    "description": "Where do we eat lunch!?",
+    "version": "0.0.1",
+    "author": {
+        "name": "Peter Eliasson",
+        "email": "peter-eliasson@hotmail.com"
+    },
+    "license" : "MIT",
+    "dependencies": {
+        "pg": "2.x.x",
+        "sql": "0.x.x"
+    },
+    "devDependencies": {
+        "grunt": "0.4.x",
+        "grunt-contrib-jshint": "0.9.x",
+        "grunt-mocha-test": "0.9.x",
+        "chai": "*"
+    },
+    "private": true
+}
