@@ -4,9 +4,9 @@ config = require './config'
 DatabaseProvider = require './lib/database_provider'
 databaseProvider = new DatabaseProvider(config.database)
 
-User = require './user'
+User = require './lib/user'
 
-util = require './util'
+util = require './lib/util'
 hasRequiredParameters = util.hasRequiredParameters
 
 # Create the server with name and version
