@@ -9,7 +9,9 @@
     "license" : "MIT",
     "dependencies": {
         "pg": "2.x.x",
-        "sql": "0.x.x"
+        "sql": "0.x.x",
+        "restify": "2.6.x",
+        "q": "1.0.x"
     },
     "devDependencies": {
         "grunt": "0.4.x",
