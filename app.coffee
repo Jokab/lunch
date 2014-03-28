@@ -18,7 +18,6 @@ server = restify.createServer({
 # bodyParser lets us read POST data from req.params
 server.use restify.bodyParser()
 
-
 server.post '/register', (req, res, next) ->
     if not hasRequiredParameters req.params, 'username', 'password'
         return next(new restify.MissingParameterError "username and password is required.")
@@ -30,7 +29,7 @@ server.post '/register', (req, res, next) ->
     .then () ->
         res.send("OK")
     .catch (err) ->
-        console.log  err
+        console.log err
         next(err)
 
 
