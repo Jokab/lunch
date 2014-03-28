@@ -32,6 +32,21 @@ server.post '/register', (req, res, next) ->
         console.log err
         next(err)
 
+server.post '/login', (req, res, next) ->
+    if not hasRequiredParameters req.params, 'username', 'password'
+        return next(new restify.MissingParameterError "username and password is required.")
+
+    username = req.params.username
+    password = req.params.password
+
+    User.login username, password, databaseProvider
+    .then (api_secret) ->
+        res.send(api_secret)
+    .catch (err) ->
+        console.log error
+        console.error err.stack
+        next(err)
+
 
 # Serve static files if no api file matches
 server.get '/.*?', restify.serveStatic
