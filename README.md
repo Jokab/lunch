@@ -4,7 +4,7 @@ _Where do we eat!?_
 # Quick Installation 
 1. Install [Node.JS](http://nodejs.org/) and [PostgreSQL](http://www.postgresql.org/).
 2. Set up and start PostgreSQL.
-3. Clone the repository `git clone https://github.com/Verath/lunch`.
+3. Clone the repository `git clone https://github.com/verath/lunch.git`.
 4. Install dependencies local `npm install`.
 5. Install coffee-script globally `npm install -g coffee-script`.
 6. (optional) Install grunt-cli globally, for running unit tests `npm install -g grunt-cli`.
