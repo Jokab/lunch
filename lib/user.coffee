@@ -7,7 +7,6 @@ class User
     HASH_ITERATIONS = 100
     HASH_KEY_LEN = 128
     HASH_SALT_LEN = 64
-    API_TOKEN_LEN = 128
 
     # Checks if a username is already in the database.
     # Returns a promise that is resolved if there are no
@@ -29,40 +28,45 @@ class User
 
         defer.promise
 
-    createAPIToken = () ->
+    # Creates a random secret key used as a user's secret key.
+    createAPISecretKey = () ->
         hashSum = crypto.createHash('sha1')
-        hashSum.update crypto.randomBytes(API_TOKEN_LEN).toString('base64')
+        hashSum.update crypto.randomBytes(128).toString('base64')
         hashSum.digest('hex')
 
-    # Hashes a function using a predefined hashing algo.
-    # Returns a promise that is resolved with the
-    # resulting string that should be stored in the db.
+
+    # Hashes a password.
+    # Returns a promise that is resolved with and array holding three
+    # values;
+    # `[hashString, salt, derivedKey]`
+    # Where hashString is a combined string on the format of
+    # `algorithm + ":" + iterations + ":" + keyLen + ":" + derivedKey`
+    # and is meant to be what is inserted as the password in the database.
     createPasswordHash = (password, salt = null, algorithm = HASH_ALGORITHM, iterations = HASH_ITERATIONS, keyLen = HASH_KEY_LEN) ->
         if not salt?
             salt = crypto.randomBytes(HASH_SALT_LEN).toString('base64')
 
         Q.nfapply crypto[algorithm], [password, salt, iterations, keyLen]
         .then (derivedKey) ->
-            [algorithm + ":" +
-                 iterations + ":" +
-                 keyLen + ":" +
-                 salt + ":" +
-                 derivedKey.toString('base64'),
-             derivedKey.toString('base64')]
+            derivedKeyB64 = derivedKey.toString('base64')
+            return [algorithm + ":" + iterations + ":" + keyLen + ":" + derivedKeyB64,
+                    salt,
+                    derivedKeyB64]
 
 
     # Creates a new user entry in the database.
     # Returns a promise.
-    insertUserIntoDb = (username, hash, dbClient) ->
+    insertUserIntoDb = (username, hash, salt, apiSecret, dbClient) ->
         defer = Q.defer()
 
         query = '' +
-            ' INSERT INTO users (username, password_hash)' +
-            ' VALUES ($1, $2)'
+            ' INSERT INTO users (username, password, salt, api_secret)' +
+            ' VALUES ($1, $2, $3, $4)'
 
-        dbClient.query query, [username, hash], (err) ->
+        dbClient.query query, [username, hash, salt, apiSecret], (err) ->
             if err?
-                defer.reject err
+                console.error 'DBError: ' + err
+                defer.reject new Error('Could not insert user into database')
             else
                 defer.resolve
 
@@ -95,7 +99,7 @@ class User
         # Hash the provided password with the same algorithm and arguments
         # if the key is the same the passwords match
         createPasswordHash password, salt, algorithm, iterations, keyLen
-        .then ([hash, derivedKey]) ->
+        .then ([h, s, derivedKey]) ->
             if derivedKey != key
                 return Q.reject 'Password and hash does not match'
             Q.resolve()
@@ -115,12 +119,11 @@ class User
         .then () ->
             checkUsernameAvailable(username, dbClient)
         .then () ->
-            createPasswordHash(password)
-        .then ([hash]) ->
-            insertUserIntoDb username, hash, dbClient
+            [createPasswordHash(password), createAPISecretKey()]
+        .spread ([hash, salt], apiSecret) ->
+            insertUserIntoDb username, hash, salt, apiSecret, dbClient
         .finally () ->
             dbClientDone() if dbClientDone?
-
 
 
 module.exports = User

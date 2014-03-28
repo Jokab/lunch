@@ -1,6 +1,11 @@
 
 CREATE TABLE users (
-    username varchar(30) NOT NULL,
-    password_hash text NOT NULL,
-    PRIMARY KEY (username),
+    user_id SERIAL,
+    username varchar(64) NOT NULL,
+    password varchar(1024) NOT NULL,
+    salt varchar(512) NOT NULL,
+    api_secret varchar(512) NOT NULL,
+    PRIMARY KEY (user_id),
+    UNIQUE (username),
+    UNIQUE (api_secret)
 );
