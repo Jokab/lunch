@@ -1,10 +1,9 @@
 *.sublime-*
 
-lib/*.js
-app.js
-*.map
+app/*.js
+app/*.map
+app/config.coffee
 
-config.js
 node_modules
 
 .idea

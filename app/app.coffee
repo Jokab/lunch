@@ -1,12 +1,12 @@
 restify = require 'restify'
 config = require './config'
 
-DatabaseProvider = require './lib/database_provider'
+DatabaseProvider = require './database_provider'
 databaseProvider = new DatabaseProvider(config.database)
 
-User = require './lib/user'
+User = require './user'
 
-util = require './lib/util'
+util = require './util'
 hasRequiredParameters = util.hasRequiredParameters
 
 # Create the server with name and version
@@ -50,7 +50,7 @@ server.post '/login', (req, res, next) ->
 
 # Serve static files if no api file matches
 server.get '/.*?', restify.serveStatic
-    directory: './public',
+    directory: '../public',
     default: "index.html"
 
 

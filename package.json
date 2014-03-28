@@ -6,7 +6,7 @@
         "name": "Peter Eliasson",
         "email": "peter-eliasson@hotmail.com"
     },
-    "license" : "MIT",
+    "license": "MIT",
     "dependencies": {
         "pg": "2.x.x",
         "sql": "0.x.x",
