@@ -50,7 +50,7 @@ server.post '/login', (req, res, next) ->
 
 # Serve static files if no api file matches
 server.get '/.*?', restify.serveStatic
-    directory: '../public',
+    directory: './public',
     default: "index.html"
 
 
