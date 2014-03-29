@@ -1,59 +1,25 @@
 restify = require 'restify'
 config = require './config'
-
-DatabaseProvider = require './database_provider'
-databaseProvider = new DatabaseProvider(config.database)
-
-User = require './user'
-
-util = require './util'
-hasRequiredParameters = util.hasRequiredParameters
+routes = require './routes'
 
 # Create the server with name and version
-server = restify.createServer({
+app = restify.createServer({
     name: 'LunchAPI',
     version: "0.0.1"
 })
 
 # bodyParser lets us read POST data from req.params
-server.use restify.bodyParser()
+app.use restify.bodyParser()
 
-server.post '/register', (req, res, next) ->
-    if not hasRequiredParameters req.params, 'username', 'password'
-        return next(new restify.MissingParameterError "username and password is required.")
-
-    username = req.params.username
-    password = req.params.password
-
-    User.register username, password, databaseProvider
-    .then () ->
-        res.send("OK")
-    .catch (err) ->
-        console.log err
-        next(err)
-
-server.post '/login', (req, res, next) ->
-    if not hasRequiredParameters req.params, 'username', 'password'
-        return next(new restify.MissingParameterError "username and password is required.")
-
-    username = req.params.username
-    password = req.params.password
-
-    User.login username, password, databaseProvider
-    .then (api_secret) ->
-        res.send(api_secret)
-    .catch (err) ->
-        console.log error
-        console.error err.stack
-        next(err)
-
+# Auth routes
+app.post '/register', routes.auth.register
+app.post '/login', routes.auth.login
 
 # Serve static files if no api file matches
-server.get '/.*?', restify.serveStatic
-    directory: './public',
+app.get '/.*?', restify.serveStatic
+    directory: __dirname + '/../public',
     default: "index.html"
 
-
 # Start the server at the specified port and ip
-server.listen config.server.port, config.server.ip, () ->
-    console.log '%s listening at %s', server.name, server.url
+app.listen config.server.port, config.server.ip, () ->
+    console.log '%s listening at %s', app.name, app.url

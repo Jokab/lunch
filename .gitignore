@@ -1,7 +1,7 @@
 *.sublime-*
 
-app/*.js
-app/*.map
+app/**/*.js
+app/**/*.map
 app/config.coffee
 
 node_modules
