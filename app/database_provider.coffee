@@ -1,5 +1,7 @@
 Q = require 'q'
 pg = require 'pg'
+dbConfig = (require './config').database
+
 
 # Class for providing access to the database
 class DatabaseProvider
@@ -9,7 +11,11 @@ class DatabaseProvider
     #   'user', 'database', 'password', 'port', 'host' and 'ssl'
     # as used by pg.connect.
     constructor: (config) ->
-        {@user, @database, @password, @port, @host, @ssl} = config
+        # Set default values
+        {@user, @database, @password, @port, @host, @ssl} = dbConfig
+        # Override if user provided a config object
+        if typeof config is "object"
+            {@user, @database, @password, @port, @host, @ssl} = config
 
 
     # Returns a promise resolved with an array of [PG database client, done].
