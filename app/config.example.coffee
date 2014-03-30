@@ -10,5 +10,8 @@ module.exports = {
         port: 5432,
         host: null,
         ssl: false
+    },
+    authentication: {
+        jwt_secret: "MUCH SECRET. SUCH WOW!"
     }
 };

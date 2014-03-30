@@ -1,13 +1,13 @@
 restify = require 'restify'
 DatabaseProvider = require './../database_provider'
-User = require './../user'
-util = require './../util'
+User = require './user'
+util = require './util'
 
 databaseProvider = new DatabaseProvider()
 hasRequiredParameters = util.hasRequiredParameters
 
 
-exports.register = (req, res, next) ->
+module.exports.register = (req, res, next) ->
     if not hasRequiredParameters req.params, 'username', 'password'
         return next(new restify.MissingParameterError "username and password is required.")
 
@@ -22,7 +22,7 @@ exports.register = (req, res, next) ->
         next(err)
 
 
-exports.login = (req, res, next) ->
+module.exports.login = (req, res, next) ->
     if not hasRequiredParameters req.params, 'username', 'password'
         return next(new restify.MissingParameterError "username and password is required.")
 

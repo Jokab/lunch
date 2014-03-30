@@ -11,7 +11,10 @@
         "pg": "2.x.x",
         "sql": "0.x.x",
         "restify": "2.6.x",
-        "q": "1.0.x"
+        "q": "1.0.x",
+        "passport": "0.2.x",
+        "passport-strategy": "1.x.x",
+        "jwt-simple": "0.2.0"
     },
     "devDependencies": {
         "grunt": "0.4.x",

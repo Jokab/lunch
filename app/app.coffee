@@ -1,6 +1,13 @@
 restify = require 'restify'
+passport = require 'passport'
 config = require './config'
-routes = require './routes'
+authentication = require './authentication'
+
+
+# Set up passport authentication strategy
+Authentication = authentication.Authentication
+auth = new Authentication(passport)
+
 
 # Create the server with name and version
 app = restify.createServer({
@@ -8,12 +15,19 @@ app = restify.createServer({
     version: "0.0.1"
 })
 
-# bodyParser lets us read POST data from req.params
+
 app.use restify.bodyParser()
+app.use restify.queryParser()
+app.use passport.initialize()
+
 
 # Auth routes
-app.post '/register', routes.auth.register
-app.post '/login', routes.auth.login
+app.post '/register', authentication.routes.register
+app.post '/login', authentication.routes.login
+
+# API routes
+app.get '/api/.*?', auth.authenticate(), (res, req, next) ->
+    console.log 'was AUTH'
 
 # Serve static files if no api file matches
 app.get '/.*?', restify.serveStatic
