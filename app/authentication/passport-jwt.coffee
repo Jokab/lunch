@@ -31,12 +31,12 @@ class Strategy extends BaseStrategy
 
 
     authenticate: (req, options) ->
+        # TODO: Token should be fetched from an http header
         token = req.params["token"]
 
         Q.nfcall(@_verify, token)
-        .then (res) =>
-            console.log "result jwt "
-            console.log res
+        .then (user) =>
+            @success(user)
         .catch (err) =>
             console.log "Authfail: " + err
             @fail()

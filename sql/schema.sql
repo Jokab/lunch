@@ -1,17 +1,16 @@
 
 CREATE TABLE users (
-    user_id SERIAL,
     username VARCHAR(64) NOT NULL,
     password VARCHAR(1024) NOT NULL,
     salt VARCHAR(512) NOT NULL,
-    PRIMARY KEY (user_id),
-    UNIQUE (username)
+    PRIMARY KEY (username)
 );
 
+-- Not part of users since one might want multiple secrets
+-- for one user in the future. One per client possibly.
 CREATE TABLE api_secrets (
-    user_id INTEGER REFERENCES users(user_id),
+    username VARCHAR(64) REFERENCES users(username) ON DELETE CASCADE,
     api_secret VARCHAR(512),
     created_on TIMESTAMP DEFAULT statement_timestamp(),
-    PRIMARY KEY (user_id, api_secret),
-    UNIQUE(api_secret)
+    PRIMARY KEY (username)
 );

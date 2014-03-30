@@ -9,6 +9,7 @@
     "license": "MIT",
     "dependencies": {
         "pg": "2.x.x",
+        "pg-transaction": "1.0.x",
         "sql": "0.x.x",
         "restify": "2.6.x",
         "q": "1.0.x",
