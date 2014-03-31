@@ -26,7 +26,8 @@ class Authentication
                     Q.fcall(validateJWT, token, api_secret)
                 .then () ->
                     done(null, user)
-                .done()
+                .catch (err) ->
+                    done(err, null)
             catch err
                 done(err, null)
         )

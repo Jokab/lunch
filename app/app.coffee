@@ -1,6 +1,7 @@
 restify = require 'restify'
 passport = require 'passport'
 config = require './config'
+Group = require './api/group'
 Authentication = require './authentication'
 DatabaseProvider = require './database_provider'
 
@@ -33,7 +34,10 @@ app.post '/login', auth.getLoginRoute()
 # API routes
 app.get '/api/hello', auth.authenticate(), (req, res, next) ->
     user = req['user']
-    res.send "Hello " + user.getUsername() + "!"
+    Group.getGroupsByUser(user, databaseProvider)
+    .then (groups) ->
+        res.send(groups)
+
 
 # Serve static files if no api file matches
 app.get '/.*?', restify.serveStatic
