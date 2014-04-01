@@ -1,4 +1,7 @@
-# Lunch
+# Lunch 
+
+[![Build Status](https://travis-ci.org/verath/lunch.svg)](https://travis-ci.org/verath/lunch)
+
 _Where do we eat!?_
 
 # Quick Installation 
