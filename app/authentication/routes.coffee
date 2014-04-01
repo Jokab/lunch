@@ -1,10 +1,10 @@
 restify = require 'restify'
 User = require './user'
-util = require './util'
+routeUtils = require './../util/routeUtils'
 app = require '../app'
 auth_helpers = require './auth_helpers'
 
-hasRequiredParameters = util.hasRequiredParameters
+hasRequiredParameters = routeUtils.hasRequiredParameters
 
 
 module.exports.register = (req, res, next) ->
