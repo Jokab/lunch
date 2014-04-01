@@ -1,7 +1,8 @@
 restify = require 'restify'
 User = require './user'
 util = require './util'
-
+app = require '../app'
+auth_helpers = require './auth_helpers'
 
 hasRequiredParameters = util.hasRequiredParameters
 
@@ -13,7 +14,7 @@ module.exports.register = (req, res, next) ->
     username = req.params.username
     password = req.params.password
 
-    User.register username, password, @databaseProvider
+    User.register username, password, app.databaseProvider
     .then () ->
         res.send("OK")
         next()
@@ -30,9 +31,9 @@ module.exports.login = (req, res, next) ->
     username = req.params.username
     password = req.params.password
 
-    User.login username, password, @databaseProvider
+    User.login username, password, app.databaseProvider
     .then (user) =>
-        @createUserJWT(user)
+        auth_helpers.createUserJWT(user)
     .then (jwt) ->
         res.send(jwt)
         next()

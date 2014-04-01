@@ -1,33 +1,42 @@
 Q = require 'q'
+databaseUtil = require '../util/databaseUtil'
+
+deferredQuery = databaseUtil.deferredQuery
+callDbMethodUsingDbProvider = databaseUtil.callDbMethodUsingDbProvider
 
 class Group
 
-    getGroupsByUsernameFromDb = (username, dbClient) ->
-        defer = Q.defer()
+    getGroupListFromDb = (dbClient) ->
+        query = '' +
+            ' SELECT groups.name, groups.id FROM groups'
 
+        deferredQuery dbClient, query
+        .then (result) ->
+            Q.resolve result.rows
+
+
+    getGroupListByUserFromDb = (username, dbClient) ->
         query = '' +
             ' SELECT groups.name, groups.id FROM groups, users_part_of_group P' +
             ' WHERE P.group_id = groups.id and P.username = $1'
 
-        dbClient.query query, [username], (err, result) ->
-            if err
-                defer.reject err
-            else
-                defer.resolve result.rows
+        deferredQuery dbClient, query, [username]
+        .then (result) ->
+            Q.resolve result.rows
 
-        defer.promise
 
-    @getGroupsByUser: (user, databaseProvider) ->
-        dbClient = null
-        dbClientDone = null
+    # Gets all groups currently in the database.
+    # Returns a promise, resolved with the result.
+    @getGroupList: (databaseProvider) ->
+        callDbMethodUsingDbProvider databaseProvider, (dbClient) ->
+            getGroupListFromDb(dbClient)
 
-        databaseProvider.getClient()
-        .then ([client, doneCallback]) ->
-            dbClient = client
-            dbClientDone = doneCallback
-        .then () ->
-            getGroupsByUsernameFromDb user.getUsername(), dbClient
-        .finally () ->
-            dbClientDone?()
+
+    # Gets all groups that the user is part of.
+    # Returns a promise, resolved with the result.
+    @getGroupListByUser: (user, databaseProvider) ->
+        callDbMethodUsingDbProvider databaseProvider, (dbClient) ->
+            getGroupListByUserFromDb(user.getUsername(), dbClient)
+
 
 module.exports = Group
