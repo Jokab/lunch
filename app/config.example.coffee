@@ -14,4 +14,4 @@ module.exports = {
     authentication: {
         jwt_secret: "MUCH SECRET. SUCH WOW!"
     }
-};
+}
